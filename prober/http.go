@@ -608,6 +608,7 @@ func ProbeHTTP(ctx context.Context, target string, module config.Module, registr
 		isSSLGauge.Set(float64(1))
 		registry.MustRegister(probeSSLEarliestCertExpiryGauge, probeTLSVersion, probeSSLLastChainExpiryTimestampSeconds, probeSSLLastInformation)
 		probeSSLEarliestCertExpiryGauge.Set(float64(getEarliestCertExpiry(resp.TLS).Unix()))
+		probeSSLCertIssuerGauge.Set(getCertIssuer())
 		probeSSLCertProviderGauge.Set(getCertIssuer())
 		probeTLSVersion.WithLabelValues(getTLSVersion(resp.TLS)).Set(1)
 		probeSSLLastChainExpiryTimestampSeconds.Set(float64(getLastChainExpiry(resp.TLS).Unix()))
