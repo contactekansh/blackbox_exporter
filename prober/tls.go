@@ -20,6 +20,11 @@ import (
 	"time"
 )
 
+func getCertIssuer() string {
+	var issuer string = "lets-encrypt"
+	return issuer
+}
+
 func getEarliestCertExpiry(state *tls.ConnectionState) time.Time {
 	earliest := time.Time{}
 	for _, cert := range state.PeerCertificates {
