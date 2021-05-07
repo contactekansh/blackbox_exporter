@@ -282,7 +282,7 @@ func ProbeHTTP(ctx context.Context, target string, module config.Module, registr
 			prometheus.GaugeOpts{
 				Name: "probe_ssl_last_chain_info",
 				Help: "Contains SSL leaf certificate information",
-			},
+			},probeSSLCertIssuerGauge
 			[]string{"fingerprint_sha256"},
 		)
 
@@ -614,7 +614,7 @@ func ProbeHTTP(ctx context.Context, target string, module config.Module, registr
 		registry.MustRegister(probeSSLEarliestCertExpiryGauge, probeSSLCertIssuerGauge, probeTLSVersion, probeSSLLastChainExpiryTimestampSeconds, probeSSLLastInformation)
 		probeSSLEarliestCertExpiryGauge.Set(float64(getEarliestCertExpiry(resp.TLS).Unix()))
 		probeTLSVersion.WithLabelValues(getTLSVersion(resp.TLS)).Set(1)
-		probeSSLCertIssuerGauge.Set(getCertIssuer())
+		probeSSLCertIssuerGauge.Set(float64(getEarliestCertExpiry(resp.TLS).Unix()))
 		probeSSLLastChainExpiryTimestampSeconds.Set(float64(getLastChainExpiry(resp.TLS).Unix()))
 		probeSSLLastInformation.WithLabelValues(getFingerprint(resp.TLS)).Set(1)
 		if httpConfig.FailIfSSL {
