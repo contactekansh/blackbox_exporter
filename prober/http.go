@@ -282,7 +282,7 @@ func ProbeHTTP(ctx context.Context, target string, module config.Module, registr
 			prometheus.GaugeOpts{
 				Name: "probe_ssl_last_chain_info",
 				Help: "Contains SSL leaf certificate information",
-			},probeSSLCertIssuerGauge
+			},
 			[]string{"fingerprint_sha256"},
 		)
 
@@ -547,7 +547,7 @@ func ProbeHTTP(ctx context.Context, target string, module config.Module, registr
 		if err != nil {
 			level.Error(logger).Log("msg", "Error parsing version number from HTTP version", "err", err)
 		}
-		probeHTTPVersionGauge.Set(httpVersionNumber)
+		probeHTTPVersionGauge.Set(httpVersionNumber)SSLLast
 
 		if len(httpConfig.ValidHTTPVersions) != 0 {
 			found := false
