@@ -262,19 +262,20 @@ func ProbeHTTP(ctx context.Context, target string, module config.Module, registr
 			Help: "Response HTTP status code",
 		})
 
-		probeSSLEarliestGauge = prometheus.NewGauge(prometheus.GaugeOpts{
+		probeSSLEarliestCertExpiryGauge = prometheus.NewGauge(prometheus.GaugeOpts{
 			Name: "probe_ssl_earliest_cert_expiry",
 			Help: "Returns earliest SSL cert expiry in unixtime",
 		})
-
-		probeSSLLastChainExpiryTimestampSeconds = prometheus.NewGauge(prometheus.GaugeOpts{
-			Name: "probe_ssl_last_chain_expiry_timestamp_seconds",
-			Help: "Returns last SSL chain expiry in timestamp seconds",
-		})
+		
 		
 		probeSSLCertIssuerGauge = prometheus.NewGauge(prometheus.GaugeOpts{
 			Name: "probe_ssl_cert_issuer",
 			Help: "Returns SSL cert provider",
+		})
+		
+		probeSSLLastChainExpiryTimestampSeconds = prometheus.NewGauge(prometheus.GaugeOpts{
+			Name: "probe_ssl_last_chain_expiry_timestamp_seconds",
+			Help: "Returns last SSL chain expiry in timestamp seconds",
 		})
 
 		probeSSLLastInformation = prometheus.NewGaugeVec(
@@ -612,8 +613,8 @@ func ProbeHTTP(ctx context.Context, target string, module config.Module, registr
 		isSSLGauge.Set(float64(1))
 		registry.MustRegister(probeSSLEarliestCertExpiryGauge, probeTLSVersion, probeSSLLastChainExpiryTimestampSeconds, probeSSLLastInformation)
 		probeSSLEarliestCertExpiryGauge.Set(float64(getEarliestCertExpiry(resp.TLS).Unix()))
-		probeSSLCertIssuerGauge.Set(getCertIssuer())
 		probeTLSVersion.WithLabelValues(getTLSVersion(resp.TLS)).Set(1)
+		probeSSLCertIssuerGauge.Set(getCertIssuer())
 		probeSSLLastChainExpiryTimestampSeconds.Set(float64(getLastChainExpiry(resp.TLS).Unix()))
 		probeSSLLastInformation.WithLabelValues(getFingerprint(resp.TLS)).Set(1)
 		if httpConfig.FailIfSSL {
